@@ -10,7 +10,7 @@ import {
     ChevronRight,
     Loader2
 } from 'lucide-react';
-import AdditionalInformation from '../components/applicationForm/AdditionalInformation';
+import AdditionalInformation from '../components/ApplicationForm/AdditionalInformation'
 import { apiFetch } from './../services/api';
 import VerificationModal from '../components/ApplicationForm/VerificationModal';
 
