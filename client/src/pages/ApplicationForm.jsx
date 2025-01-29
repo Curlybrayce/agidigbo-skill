@@ -190,8 +190,9 @@ const ApplicationForm = () => {
 
     const handleSubmit = async () => {
         setIsSubmitting(true);
+        console.log('dont forget it will verify the fields should in case no registration proceeds ')
         if (validateStep(4)) {
-            console.log('UPloading should be here')
+            console.log('UPloading should be')
             try {
                 const response = await apiFetch('/api/auth/register', {
                     method: 'POST',
