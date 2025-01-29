@@ -1,6 +1,7 @@
 import React from 'react';
 import { ArrowRight, CheckCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import AdvancedSlideshow from './AdvancedSlideshow';
 
 const HeroSection = () => {
   return (
@@ -57,9 +58,9 @@ const HeroSection = () => {
           </div>
 
           {/* Right Image */}
-          <div className="relative">
+          {/* <div className="relative">
             <div className="relative w-full h-[500px] rounded-lg overflow-hidden">
-              {/* Placeholder image structure with geometric overlay */}
+              
               <div className="absolute inset-0 bg-gradient-to-br from-red-500/20 to-blue-900/20"></div>
               <img
                 src="/ag.jpeg"
@@ -67,7 +68,6 @@ const HeroSection = () => {
                 className="w-full h-full object-cover rounded-lg"
               />
 
-              {/* Stats Card */}
               <div className="absolute -bottom-6 -left-6 bg-white p-6 rounded-lg shadow-xl">
                 <div className="flex items-center space-x-4">
                   <div className="w-12 h-12 bg-blue-900 rounded-full flex items-center justify-center">
@@ -80,7 +80,9 @@ const HeroSection = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
+
+          <AdvancedSlideshow />
         </div>
       </div>
     </div>
