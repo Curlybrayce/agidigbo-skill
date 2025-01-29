@@ -4,6 +4,33 @@ const nodemailer = require("nodemailer");
 require("dotenv").config();
 const crypto = require("crypto");
 const EmailVerification = require("../models/EmailVerificationModel");
+const multer = require("multer");
+const fs = require("fs").promises;
+const cloudinary = require("../config/cloudinaryConfig");
+
+
+
+// Multer configuration for file upload
+const storage = multer.memoryStorage();
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit per file
+}).fields([
+  { name: "passportPhoto", maxCount: 1 },
+  { name: "nationalID", maxCount: 1 },
+  { name: "educationDoc", maxCount: 1 },
+]);
+
+const uploadToCloudinary = async (file) => {
+  return new Promise((resolve, reject) => {
+    if (!file) return resolve(null);
+    cloudinary.uploader.upload_stream({ resource_type: "auto" }, (error, result) => {
+      if (error) reject(error);
+      else resolve(result.secure_url);
+    }).end(file.buffer);
+  });
+};
+
 
 // Generate JWT Token
 const generateToken = (userId) => {
@@ -19,8 +46,7 @@ const generateVerificationCode = () => {
 const hashCode = (code) => {
   return crypto.createHash("sha256").update(code).digest("hex");
 };
-// @desc    Register new user
-// @route   POST /api/auth/signup
+
 exports.sendVerification = async (req, res) => {
   const { email, phone, fullName } = req.body;
   if (!phone || !fullName || !email) {
@@ -36,7 +62,9 @@ exports.sendVerification = async (req, res) => {
   }
 
   try {
-    const existingUser = await Applications.findOne({ $or: [{ email }, { phone }] });
+    const existingUser = await Applications.findOne({
+      $or: [{ email }, { phone }],
+    });
 
     if (existingUser) {
       return res.status(201).json({
@@ -44,8 +72,7 @@ exports.sendVerification = async (req, res) => {
         message: "Application Exists",
       });
     }
-
-    // console.log('Remain to send the verification from here:');return;
+    
     try {
       // Create Nodemailer transporter
       const transporter = nodemailer.createTransport({
@@ -60,7 +87,7 @@ exports.sendVerification = async (req, res) => {
       transporter.verify((error, success) => {
         if (error) {
           console.error("Email transporter error:", error);
-        } 
+        }
       });
 
       const verificationCode = generateVerificationCode();
@@ -179,7 +206,6 @@ exports.verfyEmail = async (req, res) => {
 
     // Find verification record
     const verificationRecord = await EmailVerification.findOne({ email });
-    
 
     if (!verificationRecord) {
       return res.status(400).json({
@@ -229,88 +255,98 @@ exports.verfyEmail = async (req, res) => {
 };
 
 exports.signup = async (req, res) => {
-  const {
-    firstName,
-    lastName,
-    email,
-    phone,
-    password,
-    gender,
-    dateOfBirth,
-    address,
-    state,
-    zone,
-    stream,
-    education,
-    educationDoc,
-    nationalID,
-    passportPhoto,
-    experience,
-    expectations,
-    handwork,
-    computerAccess,
-    internetAccess,
-  } = req.body;
-
-  
-  try {
-    // Check if a user already exists with the same email OR phone number
-    const existingUser = await Applications.findOne({
-      $or: [{ email }, { phone }],
-    });
-
-    if (existingUser) {
+  upload(req, res, async (err) => {
+    if (err) {
       return res.status(400).json({
         signupSucceed: false,
-        message: "User with this email or phone number already exists",
+        message: "File upload error: " + err.message,
       });
     }
 
+    try {
+      // Destructure form data
+      const {
+        firstName,
+        lastName,
+        email,
+        phone,
+        gender,
+        dateOfBirth,
+        address,
+        state,
+        zone,
+        stream,
+        education,
+        experience,
+        expectations,
+        handwork,
+        computerAccess,
+        internetAccess,
+      } = req.body;
 
-    // Create new applicant record
-    const user = await Applications.create({
-      firstName,
-      lastName,
-      email,
-      phone,
-      gender,
-      dateOfBirth,
-      address,
-      state,
-      zone,
-      stream,
-      education,
-      educationDoc,
-      nationalID,
-      passportPhoto,
-      experience,
-      expectations,
-      handwork,
-      computerAccess: computerAccess === "on",
-      internetAccess: internetAccess === "on",
-      status: "Pending", // Default status for new applicants
-      isRegistered: true, // Mark as registered after signup
-    });
+      // Check if user already exists
+      const existingUser = await Applications.findOne({
+        $or: [{ email }, { phone }],
+      });
+      if (existingUser) {
+        return res.status(400).json({
+          signupSucceed: false,
+          message: "User with this email or phone number already exists",
+        });
+      }
 
-    // Generate token
-    const token = generateToken(user._id);
+      // Upload files to Cloudinary
+      const passportPhotoUrl = await uploadToCloudinary(
+        req.files?.passportPhoto?.[0]
+      );
+      const nationalIDUrl = await uploadToCloudinary(
+        req.files?.nationalID?.[0]
+      );
+      const educationDocUrl = await uploadToCloudinary(
+        req.files?.educationDoc?.[0]
+      );
 
-    res.status(201).json({
-      _id: user._id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      phone: user.phone,
-      token,
-      signupSucceed: true,
-    });
-  } catch (error) {
-    console.log('error:', error)
-    res.status(500).json({
-      message: "Server error during registration",
-      error: error.message,
-    });
-  }
+      // Create new applicant record
+      const user = await Applications.create({
+        firstName,
+        lastName,
+        email,
+        phone,
+        gender,
+        dateOfBirth,
+        address,
+        state,
+        zone,
+        stream,
+        education,
+        experience,
+        expectations,
+        handwork,
+        computerAccess: computerAccess === "on",
+        internetAccess: internetAccess === "on",
+        passportPhoto: passportPhotoUrl,
+        nationalID: nationalIDUrl,
+        educationDoc: educationDocUrl,
+        status: "Pending",
+        isRegistered: true,
+      });
+
+      res.status(201).json({
+        _id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        phone: user.phone,
+        signupSucceed: true,
+      });
+    } catch (error) {
+      console.error("Signup Error:", error);
+      res.status(500).json({
+        message: "Server error during registration",
+        error: error.message,
+      });
+    }
+  });
 };
 
 // @desc    Authenticate user

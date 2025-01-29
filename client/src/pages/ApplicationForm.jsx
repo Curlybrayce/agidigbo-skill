@@ -56,10 +56,11 @@ const ApplicationForm = () => {
         education: '',
         computerAccess: false,
         internetAccess: false,
-        passportPhoto: "",
-        nationalID: "",
-        educationDoc: "",
+        passportPhoto: null,
+        nationalID: null,
+        educationDoc: null,
     });
+
 
     const validateStep = (stepNumber) => {
         const newErrors = {};
@@ -170,7 +171,6 @@ const ApplicationForm = () => {
             });
 
             const verificationData = await response.json();
-            // console.log('Error reach here:', verificationData)
             if (verificationData.verificationSent) {
                 setIsEmailVerificationSent(true);
                 setIsVerificationModalOpen(true);
@@ -189,45 +189,58 @@ const ApplicationForm = () => {
     };
 
     const handleSubmit = async () => {
-        setIsSubmitting(true);
-        console.log('dont forget it will verify the fields should in case no registration proceeds ')
+
         if (validateStep(4)) {
-            console.log('UPloading should be')
             try {
+                setIsSubmitting(true);
+                const formDataToSend = new FormData();
+
+                formDataToSend.append("firstName", formData.firstName);
+                formDataToSend.append("lastName", formData.lastName);
+                formDataToSend.append("email", formData.email);
+                formDataToSend.append("phone", formData.phone);
+                formDataToSend.append("password", formData.password);
+                formDataToSend.append("gender", formData.gender);
+                formDataToSend.append("dateOfBirth", formData.dateOfBirth);
+                formDataToSend.append("address", formData.address);
+                formDataToSend.append("state", formData.state);
+                formDataToSend.append("zone", formData.zone);
+                formDataToSend.append("stream", formData.stream);
+                formDataToSend.append("education", formData.education);
+                formDataToSend.append("experience", formData.experience);
+                formDataToSend.append("expectations", formData.expectations);
+                formDataToSend.append("handwork", formData.handwork);
+                formDataToSend.append("computerAccess", formData.computerAccess ? "on" : "off");
+                formDataToSend.append("internetAccess", formData.internetAccess ? "on" : "off");
+
+                // Append file fields (Make sure they are File objects!)
+                if (formData.educationDoc instanceof File) {
+                    formDataToSend.append("educationDoc", formData.educationDoc);
+                }
+                if (formData.nationalID instanceof File) {
+                    formDataToSend.append("nationalID", formData.nationalID);
+                }
+                if (formData.passportPhoto instanceof File) {
+                    formDataToSend.append("passportPhoto", formData.passportPhoto);
+                }
+
+                // Send request
                 const response = await apiFetch('/api/auth/register', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        firstName: formData.firstName,
-                        lastName: formData.lastName,
-                        email: formData.email,
-                        phone: formData.phone,  // Added phone field
-                        password: formData.password,
-                        gender: formData.gender,
-                        dateOfBirth: formData.dateOfBirth,
-                        address: formData.address,
-                        state: formData.state,
-                        zone: formData.zone,
-                        stream: formData.stream,
-                        education: formData.education,
-                        educationDoc: formData.educationDoc, // File upload (may require FormData)
-                        nationalID: formData.nationalID, // File upload
-                        passportPhoto: formData.passportPhoto, // File upload
-                        experience: formData.experience,
-                        expectations: formData.expectations,
-                        handwork: formData.handwork,
-                        computerAccess: formData.computerAccess ? "on" : "off", // Convert boolean to expected format
-                        internetAccess: formData.internetAccess ? "on" : "off", // Convert boolean to expected format
-                    }),
+                    body: formDataToSend, // DO NOT add Content-Type
                 });
+
                 const data = await response.json();
-                if (!data.signupSucceed) {
+                // console.log('Form Submission response:', data);
+
+                if (data.signupSucceed) {
                     setRegistrationSucceed(true);
+                    // setIsAlreadyApplied(true);
+                    setLoading(false);
+                    setStep(5);
                 }
             } catch (error) {
-                console.log('error:', error)
+                console.error('Error submitting form:', error);
             } finally {
                 setIsSubmitting(false);
             }
@@ -235,6 +248,8 @@ const ApplicationForm = () => {
             setShowValidation(true);
         }
     };
+
+
 
     const statesInNigeria = [
         "Abia", "Adamawa", "Akwa Ibom", "Anambra", "Bauchi", "Bayelsa", "Benue",
@@ -274,73 +289,24 @@ const ApplicationForm = () => {
         "Tailoring"
     ];
 
-    const handlePassportUpload = async (event) => {
+    const handlePassportUpload = (event) => {
         const file = event.target.files[0];
         if (!file) return;
-        const url = URL.createObjectURL(file);
-        setPassportUrl(url);
-        formData.passportPhoto = url
-        console.log('handlePassportUpload:', formData.passportPhoto);
-    }
+        setPassportUrl(URL.createObjectURL(file)); // Preview only
+        setFormData(prev => ({ ...prev, passportPhoto: file })); // Store File object
+    };
 
-    const handleNINUpload = async (event) => {
+    const handleNINUpload = (event) => {
         const file = event.target.files[0];
         if (!file) return;
-        const url = URL.createObjectURL(file);
-        setPassportUrl(url);
-        formData.nationalID = url
-        console.log('handleNINUpload:', formData.nationalID);
+        setFormData(prev => ({ ...prev, nationalID: file }));
+    };
 
-    }
-
-    const handleEducationDocUpload = async (event) => {
+    const handleEducationDocUpload = (event) => {
         const file = event.target.files[0];
         if (!file) return;
-        const url = URL.createObjectURL(file);
-        setPassportUrl(url);
-        formData.educationDoc = url
-        console.log('handleEducationDocUpload:', formData.educationDoc);
-
-    }
-    // const uploadFiles = async (e) => {
-    //     e.preventDefault();
-
-    //     console.log("file:", file)
-
-    //     // Create a FormData object to send files and form data
-    //     const data = new FormData();
-
-    //     // Append text fields to FormData
-    //     Object.keys(formData).forEach((key) => {
-    //         data.append(key, formData[key]);
-    //     });
-
-    //     // Append files to FormData
-    //     if (passportPhotoRef.current.files[0]) {
-    //         data.append("passportPhoto", passportPhotoRef.current.files[0]);
-    //     }
-    //     if (nationalIDRef.current.files[0]) {
-    //         data.append("nationalID", nationalIDRef.current.files[0]);
-    //     }
-    //     if (educationDocRef.current.files[0]) {
-    //         data.append("educationDoc", educationDocRef.current.files[0]);
-    //     }
-
-    //     try {
-    //         // Make an API request
-    //         const response = await axios.post("YOUR_BACKEND_ENDPOINT", data, {
-    //             headers: {
-    //                 "Content-Type": "multipart/form-data",
-    //             },
-    //         });
-
-    //         console.log("Upload successful:", response.data);
-    //         alert("Form submitted successfully!");
-    //     } catch (error) {
-    //         console.error("Upload failed:", error);
-    //         alert("Failed to submit the form.");
-    //     }
-    // };
+        setFormData(prev => ({ ...prev, educationDoc: file }));
+    };
 
     const renderStep = () => {
         switch (step) {
@@ -571,23 +537,22 @@ const ApplicationForm = () => {
             case 5:
                 return (
                     <>
-                        {registrationSucceed || isAlreadyApplied && (
-                            <div className="text-center py-8">
-                                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                    <CheckCircle className="w-8 h-8 text-green-500" />
-                                </div>
-                                <h3 className="text-2xl font-bold text-blue-900 mb-2">Application Submitted!</h3>
-                                <p className="text-gray-600 mb-6">
-                                    Thank you for applying. We will review your application and get back to you shortly. Please do not apply Multiple times.
-                                </p>
-                                <button
-                                    onClick={() => window.location.reload()}
-                                    className="bg-blue-900 text-white px-6 py-2 rounded-lg hover:bg-blue-800 transition-colors"
-                                >
-                                    Back to Home
-                                </button>
+                        {/* {registrationSucceed || isAlreadyApplied && ( */}
+                        <div className="text-center py-8">
+                            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <CheckCircle className="w-8 h-8 text-green-500" />
                             </div>
-                        )}
+                            <h3 className="text-2xl font-bold text-blue-900 mb-2">Application Submitted!</h3>
+                            <p className="text-gray-600 mb-6">
+                                Thank you for applying. We will review your application and get back to you shortly. Please do not apply Multiple times.
+                            </p>
+                            <Link to="/"
+                                className="bg-blue-900 text-white px-6 py-2 rounded-lg hover:bg-blue-800 transition-colors"
+                            >
+                                Back to Home
+                            </Link>
+                        </div>
+                        {/* )} */}
                     </>
                 );
 
@@ -692,10 +657,10 @@ const ApplicationForm = () => {
                                                 <button
                                                     type="button"
                                                     onClick={handleSubmit}
-                                                    // disabled={loading}
+                                                    disabled={isSubmitting}
                                                     className="flex items-center px-6 py-2 bg-yellow-500 text-black rounded-lg hover:bg-yellow-400 transition-colors ml-auto"
                                                 >
-                                                    {loading ? (
+                                                    {isSubmitting ? (
                                                         <>
                                                             <Loader2 className="w-5 h-5 mr-2 animate-spin" />
                                                             Submitting...
