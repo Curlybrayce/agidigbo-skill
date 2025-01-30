@@ -49,33 +49,6 @@ const AboutPage = () => {
     return (
         <div className="max-w-6xl mx-auto py-12 md:mt-[80px] px-4">
             {/* Hero Section with Ibadan cityscape background */}
-            {/* <motion.section
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 1 }}
-                className="relative text-center mb-16 py-20 rounded-3xl overflow-hidden bg-gradient-to-r from-blue-900 to-blue-700"
-            >
-                <div className="absolute inset-0 bg-opacity-60 bg-black" />
-                <div className="relative z-10">
-                    <motion.h1
-                        initial={{ y: 30, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        transition={{ delay: 0.2 }}
-                        className="text-4xl md:text-6xl font-bold text-white mb-6"
-                    >
-                        Transforming Oyo State's Future
-                    </motion.h1>
-                    <motion.p
-                        initial={{ y: 30, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        transition={{ delay: 0.4 }}
-                        className="text-xl text-gray-100 max-w-3xl mx-auto"
-                    >
-                        Empowering 3,000 young talents across Oyo State with cutting-edge digital skills and career opportunities.
-                    </motion.p>
-                </div>
-            </motion.section> */}
-
             <div className="relative min-h-screen w-full overflow-hidden">
                 {/* Video Background */}
                 <div className="absolute inset-0">
@@ -96,7 +69,7 @@ const AboutPage = () => {
                         </h1>
 
                         <p className="text-xl sm:text-2xl text-gray-200 max-w-3xl mx-auto mb-8">
-                            Empowering 3,000 young talents across Oyo State with cutting-edge digital skills and career opportunities.
+                            Empowering 3,000 young talents across Oyo State with cutting-edge skills and career opportunities.
                         </p>
 
                         {/* Call to Action Buttons */}
@@ -127,9 +100,9 @@ const AboutPage = () => {
                     <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2 
                       grid grid-cols-1 sm:grid-cols-3 gap-6 w-full max-w-4xl px-4">
                         {[
-                            { label: 'Digital Skills', value: '3,000+' },
+                            { label: 'Handwork/Craft', value: '30+' },
                             { label: 'Career Opportunities', value: '1,000+' },
-                            { label: 'Training Hours', value: '10,000+' }
+                            { label: 'Training Hours', value: '10,0+' }
                         ].map((stat, index) => (
                             <div
                                 key={index}
@@ -214,13 +187,13 @@ const AboutPage = () => {
                             label="Local Employment Rate"
                         />
                     </motion.div>
-                    <motion.div variants={fadeIn}>
+                    {/* <motion.div variants={fadeIn}>
                         <StatCard
                             icon={<Award className="w-8 h-8 text-blue-600" />}
                             number="25+"
                             label="Oyo-based Partners"
                         />
-                    </motion.div>
+                    </motion.div> */}
                 </div>
             </motion.section>
 
