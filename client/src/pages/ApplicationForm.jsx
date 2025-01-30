@@ -1,10 +1,5 @@
 import React, { useState, useRef } from 'react';
 import {
-    User,
-    Mail,
-    Phone,
-    MapPin,
-    Book,
     CheckCircle,
     ChevronLeft,
     ChevronRight,
@@ -13,6 +8,7 @@ import {
 import AdditionalInformation from '../components/ApplicationForm/AdditionalInformation'
 import { apiFetch } from './../services/api';
 import VerificationModal from '../components/ApplicationForm/VerificationModal';
+import { Link } from 'react-router-dom';
 
 const ApplicationForm = () => {
     const [isEmailVerificationSent, setIsEmailVerificationSent] = useState(false);
@@ -563,7 +559,7 @@ const ApplicationForm = () => {
 
     return (
         <div className="min-h-screen bg-gray-50 py-12 md:mt-[80px] px-4">
-            <div className="container mx-auto mt-40 md:mt-[80px] px-4">
+            <div className="container mx-auto mt-8 md:mt-[80px] px-4">
                 <div className="max-w-2xl mx-auto">
                     {/* Progress Steps */}
                     {step < 5 && (
