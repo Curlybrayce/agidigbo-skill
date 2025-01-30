@@ -563,7 +563,7 @@ const ApplicationForm = () => {
 
     return (
         <div className="min-h-screen bg-gray-50 py-12 md:mt-[80px] px-4">
-            <div className="container mx-auto px-4">
+            <div className="container mx-auto mt-40 md:mt-[80px] px-4">
                 <div className="max-w-2xl mx-auto">
                     {/* Progress Steps */}
                     {step < 5 && (
