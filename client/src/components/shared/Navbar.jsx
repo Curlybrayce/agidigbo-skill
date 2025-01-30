@@ -70,7 +70,7 @@ const Navbar = () => {
           <div className="md:hidden pb-4">
             <div className="flex flex-col space-y-4">
               <a href="#" className="text-gray-700 hover:text-blue-900 transition-colors">Home</a>
-              <a href="#program" className="text-gray-700 hover:text-blue-900 transition-colors">Program</a>
+              {/* <a href="#program" className="text-gray-700 hover:text-blue-900 transition-colors">Program</a> */}
               {/*<button
                 onClick={toggleDropdown}
                 className="flex items-center text-gray-700 hover:text-blue-900 transition-colors"
