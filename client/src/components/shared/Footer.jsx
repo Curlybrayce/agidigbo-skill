@@ -89,7 +89,7 @@ const Footer = () => {
         </div>
 
         <div className="border-t border-blue-800 mt-8 pt-8 text-center text-blue-100">
-          <p>&copy; {new Date().getFullYear()} NGO Training Portal. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Agidigbo Training Portal. All rights reserved.</p>
         </div>
       </div>
     </footer>
