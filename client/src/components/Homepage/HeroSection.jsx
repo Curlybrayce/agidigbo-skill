@@ -56,32 +56,6 @@ const HeroSection = () => {
               </button>
             </div>
           </div>
-
-          {/* Right Image */}
-          {/* <div className="relative">
-            <div className="relative w-full h-[500px] rounded-lg overflow-hidden">
-              
-              <div className="absolute inset-0 bg-gradient-to-br from-red-500/20 to-blue-900/20"></div>
-              <img
-                src="/ag.jpeg"
-                alt="Training Program"
-                className="w-full h-full object-cover rounded-lg"
-              />
-
-              <div className="absolute -bottom-6 -left-6 bg-white p-6 rounded-lg shadow-xl">
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 bg-blue-900 rounded-full flex items-center justify-center">
-                    <CheckCircle className="h-6 w-6 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-3xl font-bold text-blue-900">3,000+</h3>
-                    <p className="text-gray-600">Participants</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div> */}
-
           <AdvancedSlideshow />
         </div>
       </div>
