@@ -69,7 +69,7 @@ const Navbar = () => {
         {isOpen && (
           <div className="md:hidden pb-4">
             <div className="flex flex-col space-y-4">
-              <a href="#" className="text-gray-700 hover:text-blue-900 transition-colors">Home</a>
+              <Link to='/' className="text-gray-700 hover:text-blue-900 transition-colors">Home</Link>
               {/* <a href="#program" className="text-gray-700 hover:text-blue-900 transition-colors">Program</a> */}
               {/*<button
                 onClick={toggleDropdown}
@@ -84,11 +84,11 @@ const Navbar = () => {
                   <a href="#" className="text-gray-700 hover:text-blue-900 transition-colors">Stream 3</a>
                 </div>
               )} */}
-              <a href="#" className="text-gray-700 hover:text-blue-900 transition-colors">About</a>
-              <a href="#" className="text-gray-700 hover:text-blue-900 transition-colors">Contact</a>
-              <button className="bg-yellow-500 text-black px-6 py-2 rounded-full font-semibold hover:bg-yellow-400 transition-colors w-full">
+              <Link to='/about' className="text-gray-700 hover:text-blue-900 transition-colors">About</Link>
+              <Link to='/contact' className="text-gray-700 hover:text-blue-900 transition-colors">Contact</Link>
+              <Link to="/register" className="bg-yellow-500 text-black px-6 py-2 rounded-full font-semibold hover:bg-yellow-400 transition-colors w-full">
                 Apply Now
-              </button>
+              </Link>
             </div>
           </div>
         )}
